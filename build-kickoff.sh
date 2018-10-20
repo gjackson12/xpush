@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Set variables for script
-DATETIMESTAMP=date +%F_%H-%M-%S
+DATETIMESTAMP=$(date +%F_%H-%M-%S)
 S3_ARTIFACT_NAME="angular$DATETIMESTAMP.zip"
 BUCKET_NAME="gjackson"
 
