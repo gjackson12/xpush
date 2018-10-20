@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # Set variables for script
-S3_ARTIFACT_NAME="angular.zip"
+DATETIMESTAMP=date +%F_%H-%M-%S
+S3_ARTIFACT_NAME="angular$DATETIMESTAMP.zip"
 BUCKET_NAME="gjackson"
 
 echo "Zipping up project artifacts..."
