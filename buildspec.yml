@@ -1,0 +1,32 @@
+version: 0.2
+
+env:   
+  variables:     
+    ECR_REPOSITORY_NAME: "angular"
+    ACCOUNT_ID: "938692470617"
+    ECS_TASK_CONTAINER: "angular"
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region us-east-1)
+  build:
+    commands:
+      - VERSION=$(date '+%Y%m%d%H%M%S')
+      - echo Build started on `date` d
+      - echo Building the Docker image...
+      - docker build -t $ECR_REPOSITORY_NAME:latest .
+  post_build:
+    commands:
+      - docker tag $ECR_REPOSITORY_NAME:latest 938692470617.dkr.ecr.us-east-1.amazonaws.com/$ECR_REPOSITORY_NAME:latest
+      - docker push 938692470617.dkr.ecr.us-east-1.amazonaws.com/$ECR_REPOSITORY_NAME:latest
+      - echo Build completed on `date`
+      - echo Create image definitions file
+      - printf '[{"name":"%s","imageUri":"%s"}]' $ECS_TASK_CONTAINER 938692470617.dkr.ecr.us-east-1.amazonaws.com/$ECR_REPOSITORY_NAME:latest > imagedefinitions.json
+
+artifacts:     
+  files:
+    - imagedefinitions.json
+  discard-paths: yes
+  
