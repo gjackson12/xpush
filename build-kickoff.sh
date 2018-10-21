@@ -4,11 +4,12 @@
 DATETIMESTAMP=$(date +%F_%H-%M-%S)
 S3_ARTIFACT_NAME="angular$DATETIMESTAMP.zip"
 BUCKET_NAME="gjackson"
+GIT_STATUS="$(git status -unormal 2>&1)"
 
-if [[ "$git_status" =~ On\ branch\ ([^[:space:]]+) ]]; then
+if [[ "$GIT_STATUS" =~ On\ branch\ ([^[:space:]]+) ]]; then
   branch=${BASH_REMATCH[1]}
-
-	if [branch == "master"]; then
+	echo "${branch}"
+	if [ "${branch}" == "master" ]; then
 		echo "Zipping up project artifacts..."
 
 		zip -r -X $S3_ARTIFACT_NAME .
@@ -21,6 +22,6 @@ if [[ "$git_status" =~ On\ branch\ ([^[:space:]]+) ]]; then
 
 		s3cmd put $S3_ARTIFACT_NAME s3://$BUCKET_NAME/$S3_ARTIFACT_NAME
 	else
-		echo "No branch name found..."
+		echo "You must be on the master branch to execute a pushx operation..."
 	fi
 fi
